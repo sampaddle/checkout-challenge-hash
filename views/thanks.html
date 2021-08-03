@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title></title>
+  <meta name="author" content="">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://cdn.paddle.com/paddle/paddle.js"></script>
+  <!-- <link href="style.css" rel="stylesheet"> -->
+</head>
+
+<body>
+
+  <p>Gee, thanks!</p>
+
+  <h2>Receipt:</h2>
+  <div id="receipt_url"></div>
+  <h2>License Code:</h2>
+  <div id="license_code"></div>
+  <h2>Associated email:</h2>
+  <div id="email"></div>
+  <h2>Total Price:</h2>
+  <div id="total_price"></div>
+
+  
+
+  <script>
+      // if doing this from the front end do I need to make a post request or do back end????
+      // investigate why body is arriving blank
+      const checkoutHash = '230272-chred57ae18bda4-214163b0c3';
+      const receiptUrl = document.getElementById("receipt_url");
+      const licenseCode = document.getElementById("license_code");
+      const associatedEmail = document.getElementById("email");
+      const totalPrice = document.getElementById("total_price");
+      function getOrderInfo(checkoutHash) {
+        fetch('http://localhost:3000/checkout', {
+            method: 'POST', // *GET, POST, PUT, DELETE, etc.
+            mode: 'cors', // no-cors, *cors, same-origin
+            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: 'same-origin', // include, *same-origin, omit
+            headers: {
+            'Content-Type': 'application/json'
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            redirect: 'follow', // manual, *follow, error
+            referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+            body: JSON.stringify({
+                hash: checkoutHash
+            }) // body data type must match "Content-Type" header
+        })
+        .then(function (response) {
+            return(response.json());
+        })
+        .then(function(data) {
+            console.log(data);
+            receiptUrl.innerHTML = `<a href=${data.receipt_url}>View here</a>`;
+            licenseCode.innerHTML = `<p>${data.license_code}</p>`;
+            associatedEmail.innerHTML = `<p>${data.email}</p>`;
+            totalPrice.innerHTML = `<p>${data.total} ${data.currency}</p.`;
+        })
+      }
+      getOrderInfo(checkoutHash);
+
+
+
+  </script>
+  
+  <!-- <script src="script.js"></script> -->
+</body>
+
+</html>
