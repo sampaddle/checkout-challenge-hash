@@ -10,7 +10,7 @@ const { resolveNaptr } = require('dns');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+  res.render('index', { title: 'Express', message: 'Hola world!' });
 });
 
 router.post('/hello', function(req, res) {
@@ -53,14 +53,35 @@ router.post('/checkout', function (req, res) {
   })
 })
 
-//how I think this will work
+//how this works
 // 1. force redirect from purchase page on checkout complete, passing in checkout hash via url
 // 2. in the thanks route, use the checkout hash to make the API call ( no front end required)
 // 3. use templating language to fill in the pieces of data. 
 
 router.get('/thanks', function (req, res) {
-  res.render('thanks', {test: "this is a test object"});
+  
   console.log(req.query.id);
+
+  const hash = req.query.id
+  // call the orders API using the hash received in the redirect url parameter
+  axios.get(`https://sandbox-checkout.paddle.com/api/1.0/order/?checkout_id=${hash}`)
+  .then((response) => {
+    console.log(response.data);
+    console.log(response.data.order.receipt_url);
+    console.log(response.data.order.customer.email);
+    console.log(response.data.order.total);
+    console.log(response.data.order.currency);
+    console.log(response.data.lockers[0].license_code);
+
+    const data = response.data;
+    const receipt_url = data.order.receipt_url;
+    const email = data.order.customer.email;
+    const total = `${data.order.total} ${data.order.currency}`;
+    // const currency = data.order.currency;
+    const license_code = data.lockers[0].license_code;
+    // populat the page with the processed data
+    res.render('thanks', {test: "this is a test object", receipt_url: receipt_url, email: email, total: total, license_code: license_code});
+  })
 })
 
 // Public key from your paddle dashboard
