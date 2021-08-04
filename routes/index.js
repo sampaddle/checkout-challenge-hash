@@ -60,9 +60,18 @@ router.post('/checkout', function (req, res) {
 
 router.get('/thanks', function (req, res) {
   
+  // console.log(localStorage);
   console.log(req.query.id);
 
-  const hash = req.query.id
+  let hash = '230490-chre6dd58aebd8a-683b481de0';
+
+  if (req.query.id) {
+    console.log('if statement firing');
+    hash = req.query.id;
+    console.log(hash);
+  }
+  
+
   // call the orders API using the hash received in the redirect url parameter
   axios.get(`https://sandbox-checkout.paddle.com/api/1.0/order/?checkout_id=${hash}`)
   .then((response) => {

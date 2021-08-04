@@ -28,7 +28,8 @@
 
   <script>
       // if doing this from the front end do I need to make a post request or do back end????
-      // investigate why body is arriving blank
+      // answer: you would need to do it like this if you were passing the has using localStorage
+      // this is a dummy of how you would do it if using localstorage. just set hash below to localStorage.getItem("hash");
       const checkoutHash = '230272-chred57ae18bda4-214163b0c3';
       const receiptUrl = document.getElementById("receipt_url");
       const licenseCode = document.getElementById("license_code");
